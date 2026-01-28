@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Assign Player to Your Team</h2>
+
+<p><strong>Player:</strong> {{ player.name }}</p>
+
+<form method="POST">
+    <label class="form-label mt-2">Select Team</label>
+    <select name="team_id" class="form-select" required>
+        {% for t in teams %}
+            <option value="{{ t.id }}">{{ t.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button class="btn btn-primary mt-3">Assign</button>
+</form>
+
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Back</a>
+
+{% endblock %}

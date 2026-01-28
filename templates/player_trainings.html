@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">Προπονήσεις Ομάδας</h2>
+
+{% if trainings %}
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Ημερομηνία</th>
+            <th>Εστίαση</th>
+            <th>Διάρκεια (λεπτά)</th>
+            <th>Παρουσίες</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in trainings %}
+        <tr>
+            <td>{{ t.date }}</td>
+            <td>{{ t.focus }}</td>
+            <td>{{ t.duration }}</td>
+            <td>{{ t.attendance }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Δεν υπάρχουν προπονήσεις ακόμη.</p>
+{% endif %}
+
+<a class="btn btn-secondary mt-3" href="{{ url_for('dashboard') }}">
+    Επιστροφή στο Dashboard
+</a>
+
+{% endblock %}

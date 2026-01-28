@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">Add Stats for {{ player.name }}</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">{{ form.date.label }}{{ form.date(class="form-control") }}</div>
+    <div class="mb-3">{{ form.goals.label }}{{ form.goals(class="form-control") }}</div>
+    <div class="mb-3">{{ form.assists.label }}{{ form.assists(class="form-control") }}</div>
+    <div class="mb-3">{{ form.passes_completed.label }}{{ form.passes_completed(class="form-control") }}</div>
+    <div class="mb-3">{{ form.passes_attempted.label }}{{ form.passes_attempted(class="form-control") }}</div>
+    <div class="mb-3">{{ form.tackles.label }}{{ form.tackles(class="form-control") }}</div>
+    <div class="mb-3">{{ form.rating.label }}{{ form.rating(class="form-control") }}</div>
+
+    <button type="submit" class="btn btn-success w-100">Save</button>
+</form>
+
+{% endblock %}

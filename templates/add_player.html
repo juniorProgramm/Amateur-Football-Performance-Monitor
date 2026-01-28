@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add Player</h2>
+<form method="post">
+  {{ form.hidden_tag() }}
+  <div class="mb-3">{{ form.name.label }} {{ form.name(class="form-control") }}</div>
+  <div class="mb-3">{{ form.position.label }} {{ form.position(class="form-control") }}</div>
+  <div class="mb-3">{{ form.team.label }} {{ form.team(class="form-select") }}</div>
+  <div class="mb-3">{{ form.age.label }} {{ form.age(class="form-control") }}</div>
+  <div>{{ form.submit(class="btn btn-primary") }}</div>
+</form>
+{% endblock %}

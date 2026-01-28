@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">Chat with Players</h2>
+
+<div class="list-group">
+  {% for p in players %}
+    <a href="{{ url_for('chat', user_id=p.user_id) }}"
+       class="list-group-item list-group-item-action">
+        💬 {{ p.name }} — {{ p.position or "Unknown position" }}
+    </a>
+  {% else %}
+    <p class="text-muted mt-3">No players available for chat.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

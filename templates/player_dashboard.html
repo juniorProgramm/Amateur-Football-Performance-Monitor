@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- TOP BAR: TITLE LEFT - CHAT RIGHT -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Player Dashboard</h2>
+
+    {% if coach %}
+        <a href="{{ url_for('chat', user_id=coach.id) }}" 
+           class="btn btn-success">
+            💬 Chat with Coach ({{ coach.username }})
+        </a>
+    {% endif %}
+</div>
+
+<!-- BUTTON: TRAINING SESSIONS -->
+<a class="btn btn-primary mb-3" href="{{ url_for('player_trainings') }}">
+    Προπονήσεις Ομάδας
+</a>
+
+<hr>
+
+{% if performances %}
+  <h4>Your Recent Ratings</h4>
+
+  <canvas id="playerChart" width="800" height="300"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+  (function(){
+    const labels = {{ performances|map(attribute='date')|list|tojson }};
+    const ratings = {{ performances|map(attribute='rating')|list|tojson }};
+    const ctx = document.getElementById('playerChart').getContext('2d');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+            label: 'Rating',
+            data: ratings,
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+      },
+      options: {
+        scales: { 
+            y: { beginAtZero: true, max: 10 } 
+        }
+      }
+    });
+  })();
+  </script>
+
+{% else %}
+  <p>No performance data available yet.</p>
+{% endif %}
+
+{% endblock %}

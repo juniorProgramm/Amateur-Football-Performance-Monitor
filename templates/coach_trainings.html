@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-4">Προπονήσεις των Ομάδων σου</h2>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Ημερομηνία</th>
+            <th>Ομάδα</th>
+            <th>Εστίαση</th>
+            <th>Διάρκεια (λεπτά)</th>
+            <th>Παρουσίες</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for tr in trainings %}
+        <tr>
+            <td>{{ tr.date.strftime("%d/%m/%Y") }}</td>
+            <td>{{ tr.team.name }}</td>
+            <td>{{ tr.focus }}</td>
+            <td>{{ tr.duration }}</td>
+            <td>{{ tr.attendance }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

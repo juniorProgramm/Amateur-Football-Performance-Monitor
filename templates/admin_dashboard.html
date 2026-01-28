@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+<p>Total teams: {{ total_teams }} | Total players: {{ total_players }}</p>
+
+<!-- ---------------------------------------- -->
+<!--   PENDING APPROVALS                      -->
+<!-- ---------------------------------------- -->
+<h3>Pending Approvals</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in pending %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.role }}</td>
+        <td>
+          <form method="post" action="{{ url_for('approve', user_id=u.id) }}" style="display:inline">
+            <button class="btn btn-success btn-sm">Approve</button>
+          </form>
+          <form method="post" action="{{ url_for('reject', user_id=u.id) }}" style="display:inline">
+            <button class="btn btn-danger btn-sm">Reject</button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="text-muted">No pending registrations.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<hr>
+
+<!-- ---------------------------------------- -->
+<!--   ALL USERS (DELETE OPTION)              -->
+<!-- ---------------------------------------- -->
+<h3>All Users</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Approved</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in all_users %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.role }}</td>
+        <td>{{ "Yes" if u.approved else "No" }}</td>
+        <td>
+          {% if u.username != "admin" %}
+          <form method="post" action="{{ url_for('admin_delete_user', user_id=u.id) }}"
+                onsubmit="return confirm('Are you sure you want to delete this user?')" 
+                style="display:inline;">
+            <button class="btn btn-danger btn-sm">Delete</button>
+          </form>
+          {% else %}
+          <span class="text-muted">(protected)</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="text-muted">No users found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<hr>
+
+<!-- ---------------------------------------- -->
+<!--   TEAM PERFORMANCE CHART                 -->
+<!-- ---------------------------------------- -->
+<h3>Team Performance Overview</h3>
+<p>Select a team to view average rating over time:</p>
+
+<div class="mb-3">
+  <select id="teamSelect" class="form-select">
+    <option value="">-- select team --</option>
+    {% for t in teams %}
+      <option value="{{ t.id }}">{{ t.name }}</option>
+    {% else %}
+      <option disabled>(no teams yet)</option>
+    {% endfor %}
+  </select>
+</div>
+
+<canvas id="teamChart" width="800" height="300"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  const ctx = document.getElementById('teamChart').getContext('2d');
+  let chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{ 
+          label: 'Avg Rating',
+          data: [],
+          fill:false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.2
+      }]
+    },
+    options: { 
+      scales: { 
+        x: { display: true }, 
+        y: { beginAtZero:true, max:10 } 
+      }
+    }
+  });
+
+  const sel = document.getElementById('teamSelect');
+  sel.addEventListener('change', function() {
+    const teamId = this.value;
+    if (!teamId) return;
+
+    fetch(`/api/team/${teamId}/performance`)
+      .then(res => res.json())
+      .then(json => {
+        if (json.error) { 
+          alert(json.error); 
+          return; 
+        }
+        chart.data.labels = json.labels;
+        chart.data.datasets[0].data = json.values;
+        chart.update();
+      })
+      .catch(err => { 
+        console.error(err); 
+        alert('Error loading data'); 
+      });
+  });
+});
+</script>
+
+{% endblock %}

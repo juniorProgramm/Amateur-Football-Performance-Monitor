@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Amateur Football Monitor</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- THEME CSS -->
+<style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #121212;
+      --nav-bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --border-color: #dee2e6;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #eaeaea;
+      --nav-bg: #1e1e1e;
+      --card-bg: #1c1c1c;
+      --border-color: #444;
+    }
+
+    /* 🌟 Smooth animation when switching theme */
+    * {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body {
+      background-color: var(--bg-color) !important;
+      color: var(--text-color) !important;
+    }
+
+    .navbar {
+      background-color: var(--nav-bg) !important;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card, .modal-content, .list-group-item {
+      background-color: var(--card-bg) !important;
+      color: var(--text-color) !important;
+      border-color: var(--border-color) !important;
+    }
+
+    .alert {
+      color: #000 !important;
+    }
+
+    .btn-toggle-theme {
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      background: var(--card-bg);
+    }
+</style>
+   
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg" style="background-color: var(--nav-bg) !important;">
+  <div class="container-fluid">
+
+    <a class="navbar-brand fw-bold" href="{{ url_for('index') }}" style="color: var(--text-color);">
+      AFM
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+
+      <ul class="navbar-nav align-items-center">
+
+        {% if current_user.is_authenticated %}
+        <li class="nav-item me-3">
+          <span class="nav-link disabled" style="color: var(--text-color);">
+            👋 Hi, {{ current_user.username }} ({{ current_user.role }})
+          </span>
+        </li>
+        {% endif %}
+
+        <!-- THEME ICON BUTTON -->
+        <li class="nav-item me-3">
+          <button id="themeToggle" class="btn btn-toggle-theme d-flex align-items-center"
+            style="font-size: 1.3rem; border-radius: 50%; width: 40px; height: 40px; justify-content: center;">
+            🌙
+          </button>
+        </li>
+
+        {% if current_user.is_authenticated %}
+        <li class="nav-item">
+          <a class="btn btn-outline-danger fw-bold" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+        {% else %}
+        <li class="nav-item me-2">
+          <a class="btn btn-outline-primary" href="{{ url_for('login') }}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-primary" href="{{ url_for('register') }}">Register</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+
+<div class="container mt-4">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <button onclick="window.history.back()" class="btn btn-secondary mb-3">
+    ◀ Back
+  </button>
+
+  {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- DARK/LIGHT THEME SCRIPT -->
+<script>
+  const themeToggle = document.getElementById("themeToggle");
+
+  // Load saved theme or default to light
+  const savedTheme = localStorage.getItem("theme") || "light";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+
+  // Update icon
+  themeToggle.textContent = savedTheme === "light" ? "🌙" : "🌞";
+
+  themeToggle.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme");
+    const next = current === "light" ? "dark" : "light";
+
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+
+    themeToggle.textContent = next === "light" ? "🌙" : "🌞";
+  });
+</script>
+
+</body>
+</html>

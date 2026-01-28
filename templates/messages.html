@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Your Conversations</h2>
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary mb-3">Back</a>
+<hr>
+
+{% if current_user.role == 'coach' %}
+    <h4>Your Players</h4>
+    <ul class="list-group">
+
+        {% for player in players %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ player.name }}
+            <a class="btn btn-sm btn-primary" href="{{ url_for('chat', user_id=player.id) }}">
+                Open Chat
+            </a>
+        </li>
+        {% endfor %}
+
+    </ul>
+
+{% elif current_user.role == 'player' %}
+    <h4>Your Coach</h4>
+
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ coach.username }}
+        <a class="btn btn-sm btn-primary" href="{{ url_for('chat', user_id=coach.id) }}">
+            Open Chat
+        </a>
+    </li>
+
+{% endif %}
+
+<hr>
+
+<h4>Previous Conversations</h4>
+
+{% if chats and chats|length > 0 %}
+<ul class="list-group">
+    {% for m in chats %}
+    {% set other = m.sender if m.sender_id != current_user.id else m.receiver %}
+    <li class="list-group-item">
+        <a href="{{ url_for('chat', user_id=other.id) }}">
+            Conversation with {{ other.username }}
+        </a>
+        <small class="text-muted d-block">{{ m.timestamp }}</small>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No messages yet.</p>
+{% endif %}
+
+{% endblock %}

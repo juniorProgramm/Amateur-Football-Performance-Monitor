@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Players for {{ team.name }}</h2>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Position</th>
+      <th>Age</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for p in players %}
+    <tr>
+
+      <!-- Player Name -->
+      <td>
+        <a href="{{ url_for('player_detail', player_id=p.id) }}">
+          {{ p.name }}
+        </a>
+      </td>
+
+      <td>{{ p.position }}</td>
+      <td>{{ p.age }}</td>
+
+      <td class="d-flex gap-2">
+
+        <!-- View -->
+        <a href="{{ url_for('player_detail', player_id=p.id) }}"
+           class="btn btn-primary btn-sm">
+           View
+        </a>
+
+        <!-- Add Stats (ONLY FOR COACH) -->
+        {% if current_user.role == 'coach' %}
+        <a href="{{ url_for('add_stats', player_id=p.id) }}"
+           class="btn btn-info btn-sm">
+            📊 Add Stats
+        </a>
+        {% endif %}
+
+        <!-- Assign Player (useful when player has no team) -->
+        {% if current_user.role == 'coach' %}
+        <a href="{{ url_for('coach_assign_player', player_id=p.id) }}"
+           class="btn btn-warning btn-sm">
+           Assign
+        </a>
+        {% endif %}
+
+        <!-- Remove Player FROM TEAM -->
+        {% if current_user.role == 'coach' %}
+        <form method="POST"
+              action="{{ url_for('coach_remove_player', player_id=p.id) }}"
+              style="display:inline;"
+              onsubmit="return confirm('Remove player from your team?');">
+          <button class="btn btn-danger btn-sm">Remove</button>
+        </form>
+        {% endif %}
+
+      </td>
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Back</a>
+
+{% endblock %}

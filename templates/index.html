@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1>Amateur Football Performance Monitor</h1>
+  <p class="lead">A lightweight application for coaches, players and administrators to track performance.</p>
+  {% if not current_user.is_authenticated %}
+    <p><a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a></p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Coach Dashboard</h2>
+
+    <div class="d-flex gap-2">
+
+        <!-- ADD TEAM -->
+        <a href="{{ url_for('add_team') }}" 
+           class="btn btn-primary shadow-sm">
+            ➕ Add Team
+        </a>
+
+        <!-- TRAININGS -->
+        <a href="{{ url_for('coach_trainings') }}" 
+           class="btn btn-outline-warning shadow-sm"
+           title="Προπονήσεις των ομάδων σου">
+            🏋️‍♂️ Trainings
+        </a>
+
+        <!-- AVAILABLE PLAYERS (NEW BUTTON) -->
+        <a href="{{ url_for('coach_players') }}"
+           class="btn btn-outline-success shadow-sm"
+           title="Παίκτες χωρίς ομάδα">
+            🧍‍♂️ Available Players
+        </a>
+
+        <!-- CHAT -->
+        {% if teams %}
+        <a href="{{ url_for('coach_chat_list') }}" 
+           class="btn btn-outline-primary shadow-sm" 
+           title="Chat with your Players">
+            💬 Chat
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- TEAM LIST -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <strong>Your Teams</strong>
+    </div>
+
+    <ul class="list-group list-group-flush">
+
+        {% for t in teams %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ t.name }} ({{ t.season }})</span>
+
+            <div class="btn-group">
+
+                <!-- TEAM PLAYERS -->
+                <a href="{{ url_for('team_players', team_id=t.id) }}" 
+                   class="btn btn-sm btn-success">
+                    👥 Players
+                </a>
+
+                <!-- ADD PLAYER -->
+                <a href="{{ url_for('add_player') }}?team_id={{ t.id }}" 
+                   class="btn btn-sm btn-info">
+                    ➕ Add Player
+                </a>
+
+                <!-- ADD TRAINING -->
+                <a href="{{ url_for('add_training', team_id=t.id) }}" 
+                    class="btn btn-sm btn-warning">
+                    📝 Add Training
+                </a>
+
+
+            </div>
+        </li>
+
+        {% else %}
+        <!-- NO TEAMS MESSAGE -->
+        <li class="list-group-item text-center text-muted">
+            Δεν έχεις δημιουργήσει ακόμη ομάδα.
+            Πάτησε <strong>Add Team</strong> για να ξεκινήσεις.
+        </li>
+        {% endfor %}
+
+    </ul>
+</div>
+
+{% endblock %}

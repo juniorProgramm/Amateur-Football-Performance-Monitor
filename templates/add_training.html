@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Add Training</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+        {{ form.team_id.label }}  
+        {{ form.team_id(class="form-select", onchange="this.form.submit()") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.date.label }}
+        {{ form.date(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.focus.label }}
+        {{ form.focus(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.duration.label }}
+        {{ form.duration(class="form-control") }}
+    </div>
+
+    <!-- PLAYERS CHECKBOXES -->
+    {% if form.attendance.choices %}
+    <div class="mb-3 border p-3 rounded bg-light">
+        <label><strong>Players attending:</strong></label>
+        {% for value, label in form.attendance.choices %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" 
+                       name="{{ form.attendance.name }}" value="{{ value }}">
+                <label class="form-check-label">{{ label }}</label>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+{% endblock %}
